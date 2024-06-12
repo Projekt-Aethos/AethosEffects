@@ -2,12 +2,9 @@ package de.aethosprojekt.aethoseffects.api;
 
 import de.aethosprojekt.aethoseffects.entity.EffectEntityImpl;
 import de.aethosprojekt.aethoseffects.events.EffectDamageEvent;
-import org.bukkit.damage.DamageSource;
-import org.bukkit.entity.Entity;
+import de.aethosprojekt.aethoseffects.events.EffectHealEvent;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -29,22 +26,16 @@ public interface EffectEntity<E extends LivingEntity> {
     E entity();
 
     default void damage(EffectType type, double amount) {
-        if (new EffectDamageEvent(this, type, amount).callEvent()) {
-            entity().damage(amount);
+        EffectDamageEvent event = new EffectDamageEvent(this, type, amount);
+        if (event.callEvent()) {
+            entity().damage(event.getFinalDamage());
         }
     }
 
-
-    default void damage(EffectType type, double amount, @Nullable Entity source) {
-        if (new EffectDamageEvent(this, type, amount).callEvent()) {
-            entity().damage(amount, source);
+    default void heal(EffectType type, double amount) {
+        if (new EffectHealEvent(this, type, amount).callEvent()) {
+            entity().setHealth(Math.max(entity().getHealth() + amount, entity().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
         }
     }
 
-    @ApiStatus.Experimental
-    default void damage(EffectType type, double amount, @NotNull DamageSource damageSource) {
-        if (new EffectDamageEvent(this, type, amount).callEvent()) {
-            entity().damage(amount, damageSource);
-        }
-    }
 }
