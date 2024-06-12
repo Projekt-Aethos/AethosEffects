@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public interface EffectEntity<E extends LivingEntity> {
+
+
     static <E extends LivingEntity> EffectEntity<E> of(E entity) {
         return new EffectEntityImpl<>(entity);
     }

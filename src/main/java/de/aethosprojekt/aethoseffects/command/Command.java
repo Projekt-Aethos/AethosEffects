@@ -2,6 +2,7 @@ package de.aethosprojekt.aethoseffects.command;
 
 import de.aethosprojekt.aethoseffects.AethosEffects;
 import de.aethosprojekt.aethoseffects.EffectRegistry;
+import de.aethosprojekt.aethoseffects.api.EffectEntity;
 import de.aethosprojekt.aethoseffects.api.EffectType;
 import de.aethosprojekt.aethoseffects.entity.EffectEntityImpl;
 import org.bukkit.NamespacedKey;
@@ -51,6 +52,22 @@ public class Command extends org.bukkit.command.Command {
                         return true;
 
                     }
+                    case "remove" -> {
+                        EffectEntity<Player> entity = EffectEntity.of(player);
+                        EffectRegistry registry = AethosEffects.getPlugin(AethosEffects.class).getRegistry();
+                        NamespacedKey key = NamespacedKey.fromString(args[1]);
+                        if (key == null) {
+                            player.sendMessage("Key ungültig");
+                            return false;
+                        }
+                        EffectType type = registry.fromKey(key);
+                        if (type == null) {
+                            player.sendMessage("EffectType ungültig");
+                            return false;
+                        }
+                        entity.removeEffect(type);
+                        return true;
+                    }
                     case "clear" -> {
                         EffectEntityImpl<Player> entity = new EffectEntityImpl<>(player);
                         entity.clearEffects();
@@ -76,9 +93,9 @@ public class Command extends org.bukkit.command.Command {
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String @NotNull [] args) throws IllegalArgumentException {
         if (args.length == 1) {
-            return List.of("give", "info", "clear");
+            return List.of("give", "remove", "info", "clear");
         }
-        if ("give".equals(args[0])) {
+        if ("give".equals(args[0]) || "remove".equals(args[0])) {
             if (args.length == 2) {
                 return AethosEffects.getPlugin(AethosEffects.class).getRegistry().keys().stream().map(Objects::toString).toList();
             }
