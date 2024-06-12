@@ -14,7 +14,7 @@ public class EffectRegistry {
 
     private final @NotNull Map<NamespacedKey, EffectType> map = new ConcurrentHashMap<>();
 
-    protected EffectRegistry() {
+    EffectRegistry() {
 
     }
 
