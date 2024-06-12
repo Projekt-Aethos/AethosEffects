@@ -1,0 +1,9 @@
+name: AethosEffects
+version: '1.0-SNAPSHOT'
+main: de.aethosprojekt.aethoseffects.AethosEffects
+api-version: '1.20'
+dependencies:
+  server:
+    AethosLib:
+      required: true
+      load: BEFORE
